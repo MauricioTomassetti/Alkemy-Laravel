@@ -17,8 +17,9 @@ class CreateApplicationsTable extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('price', 8, 2);
-            $table->integer('id_category')->foreign('id_app_category_fk')->references('id')->on('categories');
-            $table->integer('user_id')->foreign('id_app_user_fk')->references('id')->on('categories');;
+            $table->unsignedInteger('category_id');
+            $table->string('slug')->nullable()->unique();
+            $table->text('description');
             $table->integer('vote');
             $table->string('image_src');
             $table->timestamps();

@@ -1,5 +1,6 @@
 <?php
 
+use App\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,30 +16,34 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('home');
 });
 
 Auth::routes();
 
+// Route::group(['middleware' => ['client']], function () {
+Route::get('/me/client/{id}', 'ClientController@index')->name('/me/client');
+Route::get('/me/categories', 'CategoryController@index')->name('listCategory');
+Route::get('/me/categories/{id:slug}', 'CategoryController@show')->name('appCategory');
+Route::get('/me/appDetail/{id:slug}', 'CategoryController@showapp')->name('appDetail');
 
-Route::group(['middleware' => ['client']], function () {
-    Route::get('/me/client', 'ClientController@index')->name('/me/client');
-    Route::get('/me/categories', 'CategoryController@index')->name('listCategory');
-    Route::get('/me/categories/{category}', 'CategoryController@show')->name('appCategory');
-    Route::get('/me/appDetail/{application}', 'CategoryController@showapp')->name('appDetail');
-    Route::post('/me/purcharsed', 'PurcharseController@index')->name('purcharsed');
+
+Route::group(['prefix' => 'api'], function () {
+    Route::post('buy', 'ClientController@store');
+    Route::delete('cancelbuy/{id}', 'ClientController@destroy');
 });
+// });
+
 
 
 Route::group(['middleware' => ['developer']], function () {
+    //Route::get('/me/developer', 'DeveloperController@index')->name('/me/developer');
 
-    Route::post('/me/listApp', 'ApplicationController@index')->name('listAppDeveloper');
-    Route::post('/me/app', 'ApplicationController@store');
-    Route::get('/me/app/{application}', 'ApplicationController@show');
-    Route::put('/me/app/{application}', 'ApplicationController@update');
-    Route::delete('/me/app/{application}', 'ApplicationController@destroy');
+    //Ruta para las Applicaciones
+    Route::resource('/me/app', 'ApplicationController');
 
-    Route::get('/me/developer', 'DeveloperController@index')->name('/me/developer');
+    //Ruta para el Apartado Desarrollador
+    Route::get('/me/my-list-app/{id}', 'DeveloperController@index')->name('myListApp');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

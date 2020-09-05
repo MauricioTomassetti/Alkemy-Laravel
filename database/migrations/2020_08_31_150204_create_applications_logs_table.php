@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePurcharsesTable extends Migration
+class CreateApplicationsLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreatePurcharsesTable extends Migration
      */
     public function up()
     {
-        Schema::create('purcharses', function (Blueprint $table) {
+        Schema::create('applications_logs', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->foreign('id_purcharse_user_fk')->references('id')->on('users');
-            $table->integer('app_id')->foreign('id_purcharse_app_fk')->references('id')->on('applications');
+            $table->unsignedBigInteger('application_id');
+            $table->double('old_price');
+            $table->double('new_price');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreatePurcharsesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purcharses');
+        Schema::dropIfExists('applications_logs');
     }
 }

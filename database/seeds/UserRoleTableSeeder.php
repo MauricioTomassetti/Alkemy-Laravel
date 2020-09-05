@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class UserRoleTableSeeder extends Seeder
 {
@@ -11,14 +12,14 @@ class UserRoleTableSeeder extends Seeder
      */
     public function run()
     {
-        //     DB::table('user_role')->insert([
-        //     'id_user' =>10,
-        //     'id_rol' => 1,
-        // ]);
+        DB::table('user_role')->insert([
+            'id_user' => 10,
+            'id_rol' => 1,
+        ]);
 
-        // DB::table('user_role')->insert([
-        //     'id_user' => 11,
-        //     'id_rol' => 2,
-        // ]);
+        DB::table('user_role')->insert([
+            'id_user' => 11,
+            'id_rol' => 2,
+        ]);
     }
 }

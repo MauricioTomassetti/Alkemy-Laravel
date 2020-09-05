@@ -19,8 +19,13 @@ class Developer
     public function handle($request, Closure $next)
     {
 
-        if (Auth::check() && Auth::user()->roles()->where('roles_id', '1')->exists()) {
-            return $next($request);
+        if (Auth::id() == $request->id) {
+
+            $rol = User::findOrFail($request->id)->role()->where('roles_users.id', '1')->first();
+
+            if (Auth::check() &&  $rol->name_role == 'Desarrollador') {
+                return $next($request);
+            }
         }
         abort(403);
     }

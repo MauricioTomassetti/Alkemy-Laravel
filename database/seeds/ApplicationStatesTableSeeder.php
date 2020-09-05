@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class ApplicationStatesTableSeeder extends Seeder
 {
     /**
@@ -11,31 +13,49 @@ class ApplicationStatesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('states_applications')->insert([
-            'id_app' => 1,
-            'id_state' =>1,
-            'id_user' => 101,
+        DB::table('applications_users_states')->insert([
+            'application_id' => 1,
+            'user_id' => 1,
+            'state_id' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-            
+
         ]);
 
-        DB::table('states_applications')->insert([
-            'id_app' => 2,
-            'id_state' =>2,
-            'id_user' => 102,
+        DB::table('applications_users_states')->insert([
+            'application_id' => 1,
+            'user_id' => 2,
+            'state_id' => 2,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-           
+
         ]);
 
-        DB::table('states_applications')->insert([
-            'id_app' => 1,
-            'id_state' =>3,
-            'id_user' => 103,
+        DB::table('applications_users_states')->insert([
+            'application_id' => 3,
+            'user_id' => 3,
+            'state_id' => 3,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-           
+
+        ]);
+
+        DB::table('applications_users_states')->insert([
+            'application_id' => 3,
+            'user_id' => 3,
+            'state_id' => 1,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+
+        ]);
+
+        DB::table('applications_users_states')->insert([
+            'application_id' => 3,
+            'user_id' => 1,
+            'state_id' => 2,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+
         ]);
     }
 }

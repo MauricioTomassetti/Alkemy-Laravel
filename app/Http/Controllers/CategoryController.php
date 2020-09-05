@@ -47,10 +47,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Application $application, Category $category)
     {
 
-        $applicationsCategory = Application::where('id_category', $id)->get();
+        $applicationsCategory = $application->where('category_id', $category->id)->get();
 
         return view('client.applicationCategory', compact('applicationsCategory'));
     }
@@ -89,9 +89,9 @@ class CategoryController extends Controller
         //
     }
 
-    public function showapp($id)
+    public function showapp(Application $application, Request $request)
     {
-        $appDetail = Application::where('id', $id)->get();
+        $appDetail = $application->where('id', $request->id)->get();
 
         return view('client.appDetail', compact('appDetail'));
     }

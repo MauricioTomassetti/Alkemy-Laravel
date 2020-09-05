@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogPricesTable extends Migration
+class CreateApplicationsUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateLogPricesTable extends Migration
      */
     public function up()
     {
-        Schema::create('log_prices', function (Blueprint $table) {
+        Schema::create('applications_users_states', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_app')->foreign('id_app_log_price_fk')->references('id')->on('applications');;
-            $table->double('old_price');
-            $table->double('new_price');
+            $table->integer('application_id');
+            $table->integer('user_id');
+            $table->integer('state_id');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateLogPricesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_prices');
+        Schema::dropIfExists('applications_users_states');
     }
 }

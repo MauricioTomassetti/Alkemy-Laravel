@@ -18,8 +18,13 @@ class Client
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->roles()->where('roles_id', '2')->exists()) {
-            return $next($request);
+        if (Auth::id() == $request->id) {
+
+            $rol = User::findOrFail($request->id)->role()->where('roles_users.id', '2')->first();
+
+            if (Auth::check() &&  $rol->name_role == 'Cliente') {
+                return $next($request);
+            }
         }
         abort(403);
     }

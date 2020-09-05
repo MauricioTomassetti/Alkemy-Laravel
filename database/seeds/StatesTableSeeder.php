@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class StatesTableSeeder extends Seeder
 {
@@ -11,6 +12,7 @@ class StatesTableSeeder extends Seeder
      */
     public function run()
     {
+
         DB::table('states')->insert([
             'id' => 1,
             'description' => 'No purcharse',
@@ -22,6 +24,10 @@ class StatesTableSeeder extends Seeder
         DB::table('states')->insert([
             'id' => 3,
             'description' => 'Desired',
+        ]);
+        DB::table('states')->insert([
+            'id' => 4,
+            'description' => 'Created',
         ]);
     }
 }

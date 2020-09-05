@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
 class RolesTableSeeder extends Seeder
 {
     /**
@@ -10,20 +12,20 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-          DB::table('roles')->insert([
-            'name_role' => 'desarrollador',
-            'description_role' => 'Permite acceso al sistema como desarrollador',
+
+        DB::table('roles')->insert([
+            'name_role' => 'Desarrollador',
+            'description_role' => 'Permite acceso al sistema como Desarrollador',
 
         ]);
 
         DB::table('roles')->insert([
-            'name_role' => 'cliente',
-            'description_role' => 'Permite acceso al sistema como cliente',
+            'name_role' => 'Cliente',
+            'description_role' => 'Permite acceso al sistema como Cliente',
         ]);
-
         DB::table('roles')->insert([
-            'name_role' => 'visitante',
-            'description_role' => 'Permite acceso al sistema como visitante',
+            'name_role' => 'Visitante',
+            'description_role' => 'Permite acceso al sistema como Cliente',
         ]);
     }
 }

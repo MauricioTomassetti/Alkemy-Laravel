@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Application;
+use App\Role;
+use App\State;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,11 +14,6 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -23,6 +21,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $allapps = Application::all();
+        $typeUser = Role::where('name_role', 'Cliente')->first();
+
+        return view('home', compact('allapps', 'typeUser'));
     }
 }

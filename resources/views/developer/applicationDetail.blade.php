@@ -14,7 +14,7 @@
                     </div>
                     @endif
 
-                    {{ __('ZONA DE DE DETALLES DE LAS APP PARA LOS ClienteS') }}
+                    {{ __('ZONA DE DE DETALLES DE LAS APP PARA LOS DesarrolladorES') }}
 
 
                 </div>

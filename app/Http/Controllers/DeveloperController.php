@@ -2,19 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Application;
+use App\ApplicationUserState;
+use App\State;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DeveloperController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('developer');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ApplicationUserState $applicationuserstate, $id)
     {
+        $state = State::where('description', 'Created')->first();
 
-        return view('developer.index');
+
+        $myapps = $applicationuserstate::where('user_id', $id)->where('state_id', $state->id)
+            ->join('applications', 'applications.id', '=', 'applications_users_states.id')
+            ->select('applications.id', 'name', 'price', 'description', 'image_src')
+            ->get();
+
+
+
+        return view('developer.index', compact('myapps'));
     }
 
     /**

@@ -3,26 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Application;
+use App\Http\Requests\ApplicationStoreRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $user =  Auth::user()->id;
 
-        $apps = Application::where('user_id', $user)->get();
+        //   $apps = Application::all()->where('id', Auth::id());
 
         return view('developer.applicationList', compact('apps'));
     }
@@ -34,7 +30,7 @@ class ApplicationController extends Controller
      */
     public function create()
     {
-        //
+        // dd('aca');
     }
 
     /**
@@ -43,24 +39,11 @@ class ApplicationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Application $application, ApplicationStoreRequest $request)
     {
+        $application->create($request->all());
 
-        $data = request()->validate([
-            'name' => '',
-            'price' => '',
-            'id_category' => '',
-            'user_id' => '',
-            'vote' => '',
-            'image_src' => '',
-            'created_at' => '',
-            'updated_at' => ''
-        ]);
-
-
-        $app = Application::create($data);
-
-        return redirect('/me/app/' . $app->id);
+        return redirect('/me/my-list-app');
     }
 
     /**
@@ -71,6 +54,7 @@ class ApplicationController extends Controller
      */
     public function show(Application $application)
     {
+
         return view('developer.application', compact('application'));
     }
 
@@ -92,23 +76,11 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Application $application)
+    public function update(Application $application, ApplicationStoreRequest $request)
     {
-        //$data = $application->except(['name', 'id_category']);
+        $application->update($request->except(['name', 'category_id']));
 
-        $data = request()->validate([
-            'name' => '',
-            'price' => '',
-            'id_category' => '',
-            'user_id' => '',
-            'vote' => '',
-            'image_src' => '',
-            'created_at' => '',
-            'updated_at' => ''
-        ]);
-        $application->update($data);
-
-        return redirect('/me/app/' . $application->id);
+        return redirect('/me/my-list-app');
     }
 
     /**
@@ -117,10 +89,16 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Application $application)
+    public function destroy($id)
     {
-        $application->delete();
 
-        return redirect('/me/listApp');
+
+        //$application->delete();
+
+        Application::find($id)->delete();
+
+        //    $application->delete();
+
+        return redirect('/me/my-list-app');
     }
 }

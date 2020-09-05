@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\Role;
 use App\User;
-use App\Roles;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -72,30 +72,9 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-       
-        $user->roles()->sync(Roles::where('id', $data['type-user'])->first());
-        
+
+        $user->role()->save(Role::where('id', $data['type-user'])->first());
+
         return $user;
     }
-
-    protected function redirectTo(){
-
-        $role = Auth::user()->roles()->first();
-        
-        switch ($role->name_role) {
-            
-            case 'desarrollador':
-                return '/me/developer';
-                break;
-
-            case 'cliente':
-                return '/me/client';
-                break;
-            
-            default:
-             return '/home';
-                break;
-        }            
-}
-    
 }

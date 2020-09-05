@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class CategoriesTableSeeder extends Seeder
 {
     /**
@@ -12,21 +14,21 @@ class CategoriesTableSeeder extends Seeder
     public function run()
     {
         DB::table('categories')->insert([
-            'name' =>'Music',
+            'name' => 'Music',
             'description' => 'Music applications',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('categories')->insert([
-            'name' =>'Games',
+            'name' => 'Games',
             'description' => 'Games applications',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('categories')->insert([
-            'name' =>'Educational',
+            'name' => 'Educational',
             'description' => 'Educational applications',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
