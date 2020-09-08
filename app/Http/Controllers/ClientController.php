@@ -12,23 +12,28 @@ use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
+ 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApplicationUserState $applicationuserstate, $id)
+    public function index(ApplicationUserState $applicationuserstate, $slug)
     {
+        
         $state = State::where('description', 'Purcharse')->first();
-
-        $buyapps = $applicationuserstate::where('user_id', $id)->where('state_id', $state->id)
-            ->join('applications', 'applications.id', '=', 'applications_users_states.id')
+        $user = User::where('slug',$slug)->first();
+    
+        $buyapps = $applicationuserstate::where('user_id', $user->id)->where('state_id', $state->id)
+            ->join('applications', 'applications.id', '=', 'applications_users_states.application_id')
             ->select('applications.id', 'name', 'price', 'description', 'image_src')
             ->get();
+            
+           
 
-        return view('client.index', compact('buyapps'));
+        return view('client.purcharseList', compact('buyapps'));
 
-        // return view ('client.index');
+       
     }
 
     /**
@@ -53,12 +58,14 @@ class ClientController extends Controller
         $state = State::where('description', 'Purcharse')->first();
         $user = Auth::id();
         $app = $application::find(($request->input('app_id')));
+        $userslug = User::find($user);
 
         ApplicationUserState::where('user_id', $user)
             ->where('application_id', $app->id)->where('state_id', 2)
             ->delete();
 
-        $app->users()->attach($user, ['state_id' => $state->id]);
+        $app->users()->attach($user, ['state_id' => $state->id,'slug'=> $userslug->slug]);
+        
     }
 
     /**
@@ -103,31 +110,8 @@ class ClientController extends Controller
     public function destroy(ApplicationUserState $app, $id)
 
     {
-        //$user =  Application::find($id);
-
-        //dd($user->users()->where('id', 1)->detach($user->id));
-        // $app = $application::find($id);
-        //  dd($app::all());
-
         $state = State::where('description', 'Purcharse')->first();
-
-
         $app->where('application_id', $id)->where('user_id', Auth::id())->where('state_id', $state->id)->delete();
-
-        // dd(Application::find($id)->users()->detach($app::all()->pluck('application_id')));
-
-
-        //$app_state = $application::all();
-
-        //  dd($app_state->users());
-
-        //  dd($app_state->users()->get());
-
-        //dd($user->get('id'));
-        //$application->users()->where('user_id', Auth::id())->where('state_id', 2)->wherePivot('application_id', $id)->detach($id);
-
-        // $app->users()->where('application_id', $id)->detach();
-
-        //  $app->users()->detach($id);
+            
     }
 }

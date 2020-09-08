@@ -24,11 +24,8 @@ class ApplicationStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [''],
-            'price' => [''],
-            'cetegory_id' => [''],
-            'vote' => [''],
-            'image_src' => [''],
+            'price' => ['required'],
+           'image_src' => [''],
         ];
     }
 }

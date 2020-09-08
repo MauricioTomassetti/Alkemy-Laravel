@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','slug'
     ];
 
     /**
@@ -47,4 +47,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Application::class, 'applications_users_states', 'user_id', 'application_id')
             ->withPivot('state_id')->withTimestamps();
     }
+
+     // Article model
+public function getRouteKeyName()
+{
+    return 'slug';
+}
+
+
 }

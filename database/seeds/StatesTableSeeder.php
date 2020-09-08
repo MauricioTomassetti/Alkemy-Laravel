@@ -15,7 +15,7 @@ class StatesTableSeeder extends Seeder
 
         DB::table('states')->insert([
             'id' => 1,
-            'description' => 'No purcharse',
+            'description' => 'No-Purcharsed',
         ]);
         DB::table('states')->insert([
             'id' => 2,

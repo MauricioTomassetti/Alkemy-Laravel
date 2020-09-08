@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Application;
+use App\ApplicationUserState;
 use App\Category;
+use App\State;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -16,8 +19,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
+     
         $categories = Category::all();
-        return view('client.categoryList', compact('categories'));
+        return view('client.appDetail', compact('categories'));
     }
 
     /**
@@ -47,12 +51,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Application $application, Category $category)
+    public function show(Application $application, $slug)
     {
-
-        $applicationsCategory = $application->where('category_id', $category->id)->get();
-
-        return view('client.applicationCategory', compact('applicationsCategory'));
+    
     }
 
     /**
@@ -88,11 +89,5 @@ class CategoryController extends Controller
     {
         //
     }
-
-    public function showapp(Application $application, Request $request)
-    {
-        $appDetail = $application->where('id', $request->id)->get();
-
-        return view('client.appDetail', compact('appDetail'));
-    }
 }
+   

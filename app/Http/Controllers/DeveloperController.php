@@ -21,12 +21,12 @@ class DeveloperController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApplicationUserState $applicationuserstate, $id)
+    public function index(ApplicationUserState $applicationuserstate, Request $request)
     {
         $state = State::where('description', 'Created')->first();
 
 
-        $myapps = $applicationuserstate::where('user_id', $id)->where('state_id', $state->id)
+        $myapps = $applicationuserstate::where('user_id', $request->slug)->where('state_id', $state->id)
             ->join('applications', 'applications.id', '=', 'applications_users_states.id')
             ->select('applications.id', 'name', 'price', 'description', 'image_src')
             ->get();
@@ -54,7 +54,10 @@ class DeveloperController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        
+
+
     }
 
     /**

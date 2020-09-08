@@ -16,6 +16,7 @@ class CategoriesTableSeeder extends Seeder
         DB::table('categories')->insert([
             'name' => 'Music',
             'description' => 'Music applications',
+            'slug'=>'Music',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
@@ -23,6 +24,7 @@ class CategoriesTableSeeder extends Seeder
         DB::table('categories')->insert([
             'name' => 'Games',
             'description' => 'Games applications',
+            'slug'=>'Games',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
@@ -30,6 +32,7 @@ class CategoriesTableSeeder extends Seeder
         DB::table('categories')->insert([
             'name' => 'Educational',
             'description' => 'Educational applications',
+            'slug'=>'Educational',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);

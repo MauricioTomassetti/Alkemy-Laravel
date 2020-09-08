@@ -17,15 +17,13 @@ class Client
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
-        if (Auth::id() == $request->id) {
-
-            $rol = User::findOrFail($request->id)->role()->where('roles_users.id', '2')->first();
-
-            if (Auth::check() &&  $rol->name_role == 'Cliente') {
+    
+{        
+                        
+        if (Auth::user()->role->first()->name_role=="Cliente" && (Auth::id() == $request->id ||
+            Auth::user()->slug == $request->id)) {
                 return $next($request);
-            }
-        }
+                 }
         abort(403);
     }
 }

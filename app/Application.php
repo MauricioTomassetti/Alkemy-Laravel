@@ -11,22 +11,18 @@ class Application extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'applications_users_states', 'application_id', 'user_id')
-            ->withPivot('state_id')->withTimestamps();
+            ->withPivot('state_id')
+            ->withTimestamps();
     }
 
-
-    public function category()
+    public function categories()
     {
-        return $this->hasOne(Category::class);
+        return $this->BelongsToMany(Category::class);
     }
 
     public function logs()
     {
-        return $this->belongsToMany(Log::class)->withTimestamps();;
+        return $this->belongsToMany(Log::class)->withTimestamps();
     }
 
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
 }

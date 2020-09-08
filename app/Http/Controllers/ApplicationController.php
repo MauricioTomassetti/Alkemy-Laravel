@@ -2,25 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\ApplicationUserState;
 use App\Application;
+use App\Category;
+use App\State;
 use App\Http\Requests\ApplicationStoreRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ApplicationUserState $applicationUserState, $slug)
     {
+        $state = State::where('description', 'Created')->first();
 
-        //   $apps = Application::all()->where('id', Auth::id());
+        $myapps = $applicationUserState
+            ::where('applications_users_states.slug', $slug)
+            ->where('state_id', $state->id)
+            ->join('applications', 'applications.id', '=', 'applications_users_states.application_id')
+            ->select('applications.id', 'name', 'price', 'description', 'image_src')
+            ->get();
 
-        return view('developer.applicationList', compact('apps'));
+        return view('developer.index', compact('myapps'));
     }
 
     /**
@@ -36,7 +44,7 @@ class ApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Application $application, ApplicationStoreRequest $request)
@@ -49,56 +57,77 @@ class ApplicationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Application $application)
-    {
+    public function show(Category $categories)
+   
+    {   
+    
+        dd($apps = Application::where('slug',$categories->slug)->get());
+     return $apps;
+        
+        //$applicationsCategory = $application->where('id', $slug)->get();
+        //$applicationsCategory = $application;
 
-        return view('developer.application', compact('application'));
+        //return view('client.applicationCategory', compact('applicationsCategory'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Application $application, $id)
     {
-        //
+        $app = $application
+            ->find($id)
+            ->join('categories', 'categories.id', '=', 'applications.id')
+            ->where('applications.id', $id)
+            ->select('applications.id', 'applications.name as nameapp', 'categories.name as namecat', 'price', 'image_src')
+            ->first();
+
+        return view('developer.applicationEdit', compact('app'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Application $application, ApplicationStoreRequest $request)
     {
         $application->update($request->except(['name', 'category_id']));
 
-        return redirect('/me/my-list-app');
+        return redirect()
+            ->route('/me/myListApp', Auth::user()->name)
+            ->with('message', 'Aplicacion actualizada con exito!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-
-
         //$application->delete();
 
         Application::find($id)->delete();
 
-        //    $application->delete();
+        // $application->delete();
 
         return redirect('/me/my-list-app');
+    }
+
+    public function showapp(Application $application, Request $request)
+    {
+        $appDetail = $application->where('id', $request->id)->get();
+
+        return view('client.appDetail', compact('appDetail'));
     }
 }
