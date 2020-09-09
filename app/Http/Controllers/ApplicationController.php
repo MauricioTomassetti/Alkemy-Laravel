@@ -60,13 +60,13 @@ class ApplicationController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $categories)
-   
-    {   
-    
-        dd($apps = Application::where('slug',$categories->slug)->get());
-     return $apps;
-        
+    public function show(Category $category, Application $application)
+
+    {
+        dd($application);
+
+        return $application;
+
         //$applicationsCategory = $application->where('id', $slug)->get();
         //$applicationsCategory = $application;
 

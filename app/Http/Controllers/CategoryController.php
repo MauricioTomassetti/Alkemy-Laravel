@@ -17,11 +17,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Application $application, Category $category)
     {
-     
-        $categories = Category::all();
-        return view('client.appDetail', compact('categories'));
+        $applicationsCategory = $application::where('slug', $category);
+        // dd($application);
+        return view('client.applicationCategory', compact('applicationsCategory'));
     }
 
     /**
@@ -53,7 +53,6 @@ class CategoryController extends Controller
      */
     public function show(Application $application, $slug)
     {
-    
     }
 
     /**
@@ -90,4 +89,3 @@ class CategoryController extends Controller
         //
     }
 }
-   

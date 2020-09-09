@@ -17,12 +17,11 @@ class Application extends Model
 
     public function categories()
     {
-        return $this->BelongsToMany(Category::class);
+        return $this->BelongsTo(Category::class);
     }
 
     public function logs()
     {
         return $this->belongsToMany(Log::class)->withTimestamps();
     }
-
 }

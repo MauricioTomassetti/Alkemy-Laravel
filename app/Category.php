@@ -10,8 +10,6 @@ class Category extends Model
 
     public function applications()
     {
-        $this->BelongsToMany(Application::class);
+        return $this->hasMany(Application::class);
     }
-
-
 }

@@ -4,7 +4,7 @@
     <nav class="nav nav-pills flex-column flex-sm-row">
         @foreach($categories as $category)
         @if(!Auth::check())
-        <a class="flex-sm-fill text-sm-center nav-link" href="{{ route('searchcategory',$category->slug)}}">{{$category->name}}</a>
+        <a class="flex-sm-fill text-sm-center nav-link" href="{{ route('categoryproducts',$category->slug)}}">{{$category->name}}</a>
         @else
         <a class="flex-sm-fill text-sm-center nav-link" href="{{ route('appCategory',$category->slug)}}">{{$category->name}}</a>
         @endif
