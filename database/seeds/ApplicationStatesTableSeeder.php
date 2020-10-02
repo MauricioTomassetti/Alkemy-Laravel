@@ -17,7 +17,6 @@ class ApplicationStatesTableSeeder extends Seeder
             'application_id' => 1,
             'user_id' => 1,
             'state_id' => 1,
-            'slug'=>'cliente 1',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 
@@ -27,7 +26,6 @@ class ApplicationStatesTableSeeder extends Seeder
             'application_id' => 1,
             'user_id' => 2,
             'state_id' => 2,
-            'slug'=>'cliente 1',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 
@@ -37,7 +35,6 @@ class ApplicationStatesTableSeeder extends Seeder
             'application_id' => 3,
             'user_id' => 3,
             'state_id' => 3,
-            'slug'=>'cliente 1',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 
@@ -47,7 +44,6 @@ class ApplicationStatesTableSeeder extends Seeder
             'application_id' => 3,
             'user_id' => 3,
             'state_id' => 1,
-            'slug'=>'cliente 1',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 
@@ -57,7 +53,6 @@ class ApplicationStatesTableSeeder extends Seeder
             'application_id' => 3,
             'user_id' => 1,
             'state_id' => 2,
-            'slug'=>'cliente 1',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 

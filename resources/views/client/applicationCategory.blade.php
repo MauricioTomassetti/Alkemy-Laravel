@@ -2,8 +2,11 @@
 
 @section('content')
 
-<div class="container">
+<section class="container">
     <div class="row">
+    @if ($message)
+         @include('messages.messageSuccess')
+    @endif
         @foreach($applicationsCategory as $apps)
         <div class="col-md-4">
             <div class="card mb-4 shadow-sm">
@@ -21,7 +24,7 @@
                                
        <button type="button"> <a  href="{{ route('appDetail',$apps->name)}}">Ver detalles</button></a>
                                     
-        <button type="button" id="{{$apps->id}}" onclick="addRow('{{$apps->id}}',{{$apps->price}},'{{$apps->name}}')">Agregara deseados</button>
+        <button type="button" id="{{$apps->id}}" onclick="addRow('{{$apps->id}}','{{$apps->price}}','{{$apps->name}}')">Agregara deseados</button>
                                
                                 @endif
 

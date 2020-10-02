@@ -44,15 +44,7 @@ class User extends Authenticatable
 
     public function application()
     {
-        return $this->belongsToMany(Application::class, 'applications_users_states', 'user_id', 'application_id')
-            ->withPivot('state_id')->withTimestamps();
+        return $this->belongsToMany(Application::class, 'applications_users_states', 'user_id', 'application_id')->withPivot('state_id')->withTimestamps();
     }
-
-     // Article model
-public function getRouteKeyName()
-{
-    return 'slug';
-}
-
 
 }

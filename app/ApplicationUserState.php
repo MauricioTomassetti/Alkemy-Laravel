@@ -16,7 +16,7 @@ class ApplicationUserState extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class, 'applications_users_states');
+        return $this->belongsToMany(User::class, 'applications_users_states', 'application_id', 'user_id')->withPivot('state_id')->withTimestamps();
     }
 
     public function application()

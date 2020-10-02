@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Application;
 use App\ApplicationUserState;
-use App\Http\Requests\ApplicationStoreRequest;
-use App\State;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,22 +16,18 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApplicationUserState $applicationuserstate, $slug)
+    public function index(Application $application)
     {
-        
-        $state = State::where('description', 'Purcharse')->first();
-        $user = User::where('slug',$slug)->first();
-    
-        $buyapps = $applicationuserstate::where('user_id', $user->id)->where('state_id', $state->id)
-            ->join('applications', 'applications.id', '=', 'applications_users_states.application_id')
-            ->select('applications.id', 'name', 'price', 'description', 'image_src')
-            ->get();
-            
-           
 
-        return view('client.purcharseList', compact('buyapps'));
+        $buyapps = $application->whereIn('id', function($query) {
+                                                $query->select('application_id')->from('applications_users_states')
+                                                    ->where('applications_users_states.user_id', Auth::id())->where('state_id', 2)->get();})->get();
 
+                        if ($buyapps->count() == 0 )
+                        return view('client.purcharseList', ['buyapps' => $buyapps,'message' => 'Su usuario, No realizo ninguna compra']);          
        
+            return view('client.purcharseList', ['buyapps' => $buyapps,'message' => '']);
+
     }
 
     /**
@@ -52,19 +46,11 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Application $application, Request $request)
+    public function store(ApplicationUserState $applicationUserState, Application $application, Request $request)
     {
 
-        $state = State::where('description', 'Purcharse')->first();
-        $user = Auth::id();
-        $app = $application::find(($request->input('app_id')));
-        $userslug = User::find($user);
-
-        ApplicationUserState::where('user_id', $user)
-            ->where('application_id', $app->id)->where('state_id', 2)
-            ->delete();
-
-        $app->users()->attach($user, ['state_id' => $state->id,'slug'=> $userslug->slug]);
+        $user = User::findOrFail(Auth::id());
+        $applicationUserState->users()->attach($user, ['application_id' =>$request->input('app_id'),'state_id' => 2]);
         
     }
 
@@ -107,11 +93,10 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ApplicationUserState $app, $id)
+    public function destroy(ApplicationUserState $applicationUserState, $id)
 
     {
-        $state = State::where('description', 'Purcharse')->first();
-        $app->where('application_id', $id)->where('user_id', Auth::id())->where('state_id', $state->id)->delete();
+        $applicationUserState->where('application_id', $id)->where('user_id', Auth::id())->where('state_id', 2)->delete();
             
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Application;
 use App\Category;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -18,27 +18,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index(Category $allcategories, Application $allapplication)
+    public function index(Category $categories, Application $application)
     {
+       
+        if(Auth::check()){   
+                $appsNotBuy = $application->whereNotIn('id', function($query) {
+                            $query->select('application_id')->from('applications_users_states')
+                                                            ->where('applications_users_states.user_id', Auth::id())
+                                                            ->where('state_id', 2)->get();})->get();
 
-        return view('home', ['categories' => $allcategories->all(), 'allapps' => $allapplication->all()]);
+                    if ($appsNotBuy->count() == 0 )
+                    return view('home', ['categories' => $categories->all(),'allapps' => $appsNotBuy,'message' => 'Su usuario, ya no tiene mas aplicaciones para poder comprar']);     
+            
+        }
+
+        return view('home', ['categories' => $categories->all(), 'allapps' => $application->all(),'message' => '']);
     }
-
-    // public function show($slug)
-    // {
-    //     dd('llega')
-    //     $categories = Category::all();
-
-    //     $state = State::where('description', 'No-Purcharsed')->first();
-
-    //     $user = User::where('slug',$slug)->first();
-
-    //     $allapps = ApplicationUserState::where('user_id', $user->id)->where('state_id', $state->id)
-    //         ->join('applications', 'applications.id', '=', 'applications_users_states.application_id')
-    //         ->select('applications.id', 'name', 'price', 'description', 'image_src')
-    //         ->get();
-
-
-    //     return view('home', compact('allapps','categories'));
-    // }
 }

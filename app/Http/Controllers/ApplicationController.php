@@ -17,18 +17,19 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(ApplicationUserState $applicationUserState, $slug)
+    public function index(Application $application,ApplicationUserState $applicationUserState, $slug)
     {
-        $state = State::where('description', 'Created')->first();
 
-        $myapps = $applicationUserState
-            ::where('applications_users_states.slug', $slug)
-            ->where('state_id', $state->id)
-            ->join('applications', 'applications.id', '=', 'applications_users_states.application_id')
-            ->select('applications.id', 'name', 'price', 'description', 'image_src')
-            ->get();
+        $myApps = $application->whereIn('id', function($query) {
+            $query->select('application_id')->from('applications_users_states')
+                                            ->where('applications_users_states.user_id', Auth::id())
+                                            ->where('state_id', 4)->get();})
+                                            ->get();
 
-        return view('developer.index', compact('myapps'));
+            if ($myApps->count() == 0 )
+            return view('developer.index', ['myapps' => $myApps,'messageNotAppCreated' => 'Usted no tiene ninguna applicacion creada']);
+
+    return view('developer.index', ['myapps' => $myApps,'messageNotAppCreated' => '']);
     }
 
     /**
@@ -63,14 +64,15 @@ class ApplicationController extends Controller
     public function show(Category $category, Application $application)
 
     {
-        dd($application);
+        $appsNotBuy = $application->whereNotIn('id', function($query) {
+            $query->select('application_id')->from('applications_users_states')
+                                            ->where('applications_users_states.user_id', Auth::id())
+                                            ->where('state_id', 2)->get();})->where('category_id',$category->id)->get();
 
-        return $application;
+                if ($appsNotBuy->count() == 0 )
+                return view('client.applicationCategory', ['categories' => $category->all(),'applicationsCategory' => $appsNotBuy,'message' => 'Su usuario, ya no tiene mas aplicaciones para poder comprar']);
 
-        //$applicationsCategory = $application->where('id', $slug)->get();
-        //$applicationsCategory = $application;
-
-        //return view('client.applicationCategory', compact('applicationsCategory'));
+        return view('client.applicationCategory',  ['categories' => $category->all(),'applicationsCategory' => $appsNotBuy,'message' => '']);
     }
 
     /**
@@ -126,6 +128,7 @@ class ApplicationController extends Controller
 
     public function showapp(Application $application, Request $request)
     {
+
         $appDetail = $application->where('id', $request->id)->get();
 
         return view('client.appDetail', compact('appDetail'));

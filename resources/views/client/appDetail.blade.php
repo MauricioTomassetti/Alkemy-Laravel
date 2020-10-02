@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid">
+<section class="container-fluid">
     <div class="row">
         <div class="col">
             <div class="card mb-3" style="max-width: 540px;">

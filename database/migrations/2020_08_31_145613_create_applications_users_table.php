@@ -18,7 +18,6 @@ class CreateApplicationsUsersTable extends Migration
             $table->integer('application_id');
             $table->integer('user_id');
             $table->integer('state_id');
-            $table->string('slug');
             $table->timestamps();
         });
     }

@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+
+<section class="container">
     <div class="row">
+    @if ($message)
+         @include('messages.messageSuccess')
+    @endif
         @foreach($buyapps as $apps)
         <div class="col-md-4">
             <div class="card mb-4 shadow-sm">
@@ -16,7 +20,6 @@
                             @if (Auth::user() && Auth::user()->role->first()->name_role=="Cliente")
                             <button type="button" class="submitForm" formaction="cancel" idapp="{{ $apps->id }}"
                                 id="{{ $apps->id }}" >Cancelar Compra</button>
-                            @else
                             @endif
                         </div>
                     </div>
@@ -27,5 +30,6 @@
         <div>
         </div>
     </div>
-</div>
+</section>
+@include('layouts.script')
 @endsection

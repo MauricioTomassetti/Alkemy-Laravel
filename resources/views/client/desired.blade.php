@@ -1,5 +1,5 @@
 {{-- Seccion agregar deseados --}}
-<div class="container-fluid" style="">
+<section class="container-fluid">
 <div class="float-right" id="mylist">
     <div class="card border-secondary mb-3" style="max-width: 30rem;">
         <div class="card-header">Mis Apps siguiendo</div>
