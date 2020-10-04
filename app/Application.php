@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Application extends Model
 {
-    protected $fillable = ['name', 'price', 'category_id', 'vote', 'image_src'];
+    protected $fillable = ['name', 'price', 'category_id', 'slug', 'description', 'vote', 'image_src'];
 
 
     public function categories()

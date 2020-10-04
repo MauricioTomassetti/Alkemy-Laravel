@@ -72,7 +72,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'slug' => Str::slug( $data['name'],'-',$data['email'])
+            'slug' => Str::slug($data['name'] . Str::random(50), '-')
         ]);
 
         $user->role()->save(Role::where('id', $data['type-user'])->first());

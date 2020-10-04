@@ -20,18 +20,21 @@ class HomeController extends Controller
      */
     public function index(Category $categories, Application $application)
     {
-       
-        if(Auth::check()){   
-                $appsNotBuy = $application->whereNotIn('id', function($query) {
-                            $query->select('application_id')->from('applications_users_states')
-                                                            ->where('applications_users_states.user_id', Auth::id())
-                                                            ->where('state_id', 2)->get();})->get();
 
-                    if ($appsNotBuy->count() == 0 )
-                    return view('home', ['categories' => $categories->all(),'allapps' => $appsNotBuy,'message' => 'Su usuario, ya no tiene mas aplicaciones para poder comprar']);     
-            
+        if (Auth::check()) {
+            $appsNotBuy = $application->whereNotIn('id', function ($query) {
+                $query->select('application_id')->from('applications_users_states')
+                    ->where('applications_users_states.user_id', Auth::id())
+                    ->where('state_id', 2)->get();
+            })
+                ->get();
+
+            if ($appsNotBuy->count() == 0)
+                return view('home', ['categories' => $categories->all(), 'allapps' => [], 'message' => 'Su usuario, ya no tiene mas aplicaciones para poder comprar']);
+            else
+                return view('home', ['categories' => $categories->all(), 'allapps' => $appsNotBuy, 'message' => '']);
         }
 
-        return view('home', ['categories' => $categories->all(), 'allapps' => $application->all(),'message' => '']);
+        return view('home', ['categories' => $categories->all(), 'allapps' => $application->all(), 'message' => '']);
     }
 }

@@ -19,22 +19,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-
-                                @if(!Auth::check() || Auth::user()->role->first()->name_role=="Desarrollador")
-                               
-       <button type="button"> <a  href="{{ route('appDetail',$apps->name)}}">Ver detalles</button></a>
-                                    
-        <button type="button" id="{{$apps->id}}" onclick="addRow('{{$apps->id}}','{{$apps->price}}','{{$apps->name}}')">Agregara deseados</button>
-                               
-                                @endif
-
+                                <button type="button"><a href="{{ route('appDetail',$apps->id)}}">Ver detalles</button></a>
                                 @if (Auth::user() && Auth::user()->role->first()->name_role=="Cliente")
-                                
-                        <button type="button" class="submitForm" formaction="buy" idapp="{{ $apps->id }}" name={{ $apps->id}}>Comprar</button>
-
-                        <button type="button" class="submitForm" formaction="cancel" idapp="{{ $apps->id }}" id="{{ $apps->id }}" disabled>Cancelar Compra</button>
-                                                        
-                        <button type="button"><a href="{{ route('appDetail',$apps->id)}}">Ver detalles</button></a>
+                                    <button type="button" class="submitForm" formaction="buy" idapp="{{ $apps->id }}" name={{ $apps->id}}>Comprar</button>
                                 @else
                                 @endif
                             </div>
@@ -46,6 +33,5 @@
         @endforeach
     </div>
 </div>
-@include('client.desired')
 @include('layouts.script')
 @endsection

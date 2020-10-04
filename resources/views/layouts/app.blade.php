@@ -43,14 +43,14 @@
                               </a>
                               @if(Auth::user()->role->first()->name_role == 'Desarrollador' )
 
-                              <a class="dropdown-item" href="{{ route('/me/myListApp',Auth::user()->slug) }}";">
+                              <a class="dropdown-item" href="{{ route('me.list',Auth::user()->slug) }}";">
                                  Administrar Aplicaciones
                                 </a>
                                 @endif
 
                                 @if(Auth::user()->role->first()->name_role == 'Cliente' )
 
-                              <a class="dropdown-item" href="{{ route('/me/client', Auth::user()->slug) }}";">
+                              <a class="dropdown-item" href="{{ route('me.client', Auth::user()->slug) }}";">
                                   Mis compras
                                 </a>
                                 @endif

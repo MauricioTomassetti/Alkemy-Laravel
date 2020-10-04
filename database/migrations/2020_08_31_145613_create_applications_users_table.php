@@ -15,7 +15,7 @@ class CreateApplicationsUsersTable extends Migration
     {
         Schema::create('applications_users_states', function (Blueprint $table) {
             $table->id();
-            $table->integer('application_id');
+            $table->integer('application_id')->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
             $table->integer('user_id');
             $table->integer('state_id');
             $table->timestamps();

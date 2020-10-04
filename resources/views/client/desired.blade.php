@@ -26,6 +26,7 @@
                                         <tr>
                                             <th scope="col">Nombre</th>
                                             <th scope="col">Precio</th>
+                                            <th scope="col">Dejar de seguir</th>
                                         </tr>
                                 </thead>
                                 <tbody id="desirelist">

@@ -18,13 +18,10 @@ class Developer
      */
     public function handle($request, Closure $next)
     {
-            
-        // dd($request->slug);
-        if (Auth::user()->role->first()->name_role=="Desarrollador" && (Auth::id() == $request->id ||
-            Auth::user()->slug == $request->id )) {
-                return $next($request);
-                 }
-
+        //dd($request->slug);
+        if (Auth::user()->role->first()->name_role == "Desarrollador") {
+            return $next($request);
+        }
         abort(403);
     }
 }

@@ -11,19 +11,19 @@
     <div class="col">
             <div class="card mb-6 shadow-sm text-center">
                 <div class="card-body">
-                <form  method="POST" action="{{ route('app.update', $app->id) }}">
+                <form  method="POST" action="{{ route('me.update', $app->slug) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                     <div class="form-group">
                         <label for="Nombre"><strong></strong></label>
                         <input type="text" name="name" class="form-control text-center" id="name" disabled aria-describedby="nameHelp" value="{{$app->nameapp}}">
-                        <small id="emailHelp" class="form-text text-muted">El nombre de la app, no puede ser actualizada luego de crearla.</small>
+                        <small id="appName" class="form-text text-muted">El nombre de la app, no puede ser actualizada luego de crearla.</small>
                     </div>
                     <hr>
                     <div class="form-group">
-                        <label for="Nombre"><strong></strong></label>
+                        <label for="Categorie"><strong></strong></label>
                         <input type="text" name="category" class="form-control  text-center" id="category" disabled aria-describedby="categoryHelp" value={{$app->namecat}}>
-                        <small id="emailHelp" class="form-text text-muted">La categoria de la app, no puede ser actualizada luego de crearla.</small>
+                        <small id="categorie" class="form-text text-muted">La categoria de la app, no puede ser actualizada luego de crearla.</small>
                     </div>
                     <hr>
                     <div class="form-group">
@@ -33,7 +33,7 @@
                     <hr>
                     <div class="form-group">
                         <label  for="chooseFile"><strong>Cargar imagen</strong></label>
-                        <input type="file" name="file" id="chooseFile">
+                        <input type="file" name="image" id="chooseFile">
                     </div>
                     <hr>
                     </div>
