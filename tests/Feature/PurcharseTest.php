@@ -27,7 +27,7 @@ class PurcharseTest extends TestCase
 
         $purcharses_list = Purcharse::where('user_id', $users->id)->get();
 
-        $response->assertViewIs('client.purcharseList');
-        $response->assertViewHas('purcharseList', $purcharses_list);
+        $response->assertViewIs('client.applicationBuyList');
+        $response->assertViewHas('applicationBuyList', $purcharses_list);
     }
 }

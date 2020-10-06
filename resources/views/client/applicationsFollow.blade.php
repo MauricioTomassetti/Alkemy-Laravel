@@ -1,4 +1,3 @@
-{{-- Seccion agregar deseados --}}
 <section class="container-fluid">
 <div class="float-right" id="mylist">
     <div class="card border-secondary mb-3" style="max-width: 30rem;">
@@ -6,7 +5,7 @@
         <div class="card-body text-secondary">
             @guest
                 <h5 class="card-title">Recuerda <a href="{{ route('register') }}">Registrarte</a> o
-                <a href="{{ route('register') }}">Ingresar</a> para terminar tu compra.</h5>
+                <a href="{{ route('login') }}">Ingresar</a> para terminar tu compra.</h5>
             @endguest
                 <h5 class="card-title">Podes ir viendo que apps estas siguiendo</h5>
                  <p class="card-text">
@@ -19,7 +18,7 @@
                                     </button>
                                 </h2>
                             </div>
-        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
                         <table class="table">
                                 <thead>
@@ -40,6 +39,4 @@
         </div>
     </div>
 </div>
-
-{{-- Fin agregar  deseados --}}
 

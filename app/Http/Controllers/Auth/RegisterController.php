@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use App\Role;
 use App\User;
-use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -44,6 +41,21 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+       /**
+     *Redefino la funcion de mostrar el formulario de registo
+     *asi cada vez que se actualiza el auth de laravel, no pierdo
+     *la funcion de elegir el tipo de usuario que se va a crear.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+
+    public function showRegistrationForm(Role $rol)
+{
+    $roles=$rol::all();
+    return view('auth.register', compact('roles'));
+}
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -72,11 +84,10 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'slug' => Str::slug($data['name'] . Str::random(50), '-')
         ]);
 
         $user->role()->save(Role::where('id', $data['type-user'])->first());
-
+        
         return $user;
     }
 }

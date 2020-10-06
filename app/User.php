@@ -3,12 +3,16 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use Sluggable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -46,5 +50,15 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Application::class, 'applications_users_states', 'user_id', 'application_id')->withPivot('state_id')->withTimestamps();
     }
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'name'
+            ]
+        ];
+    }
+    
 
 }

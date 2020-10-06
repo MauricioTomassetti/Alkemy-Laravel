@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Application;
 use App\ApplicationUserState;
+use App\Category;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,22 +12,15 @@ use Illuminate\Support\Facades\Auth;
 class ClientController extends Controller
 {
  
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Application $application)
+    public function index(Application $application, Category $categories)
     {
+        $allapps = $application->getAppsBought();
+        $categories = $application->getCategories();
 
-        $buyapps = $application->whereIn('id', function($query) {
-                                                $query->select('application_id')->from('applications_users_states')
-                                                    ->where('applications_users_states.user_id', Auth::id())->where('state_id', 2)->get();})->get();
-
-                        if ($buyapps->count() == 0 )
-                        return view('client.purcharseList', ['buyapps' => $buyapps,'message' => 'Su usuario, No realizo ninguna compra']);          
+            if ($allapps->count() == 0 )
+                    return view('client.index', compact('categories','allapps'))->with('message', config('constants.app_no_bought'));          
        
-            return view('client.purcharseList', ['buyapps' => $buyapps,'message' => '']);
+            return view('client.index',compact('categories','allapps'));
 
     }
 
@@ -46,12 +40,11 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ApplicationUserState $applicationUserState, Application $application, Request $request)
+    public function store(ApplicationUserState $applicationUserState, Request $request)
     {
 
         $user = User::findOrFail(Auth::id());
         $applicationUserState->users()->attach($user, ['application_id' =>$request->input('app_id'),'state_id' => 2]);
-        
     }
 
     /**
@@ -93,10 +86,10 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ApplicationUserState $applicationUserState, $id)
-
-    {
-        $applicationUserState->where('application_id', $id)->where('user_id', Auth::id())->where('state_id', 2)->delete();
+    public function destroy(ApplicationUserState $applicationUserState, Request $request)
+    {//tratar de poner el dettach
+        //$applicationUserState->applications()->detach($request->input('app_id'));
+        $applicationUserState->where('application_id', $request->input('app_id'))->where('user_id', Auth::id())->where('state_id', 2)->delete();
             
     }
 }

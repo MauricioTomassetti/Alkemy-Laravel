@@ -1,0 +1,14 @@
+<?php
+
+define('NO_APP_CREATE', 'Su usuario no posee ninguna applicacion creada.');
+define('APP_CREATE', 'Applicacion creada con exito!.');
+define('APP_NO_MORE_FOR_BUY', 'No quedan mas applicaciones por comprar');
+define('NO_APP_BOUGHT', 'Su usuario no ha relizado ninguna compra');
+
+return [
+'no_app_create' => 'Su usuario no posee ninguna applicacion creada.',
+'app_create' => 'Applicacion creada con exito!.',
+'app_no_more_buy' => 'No quedan mas applicaciones por comprar.',
+'app_no_bought' => 'Su usuario no ha relizado ninguna compra.'
+];
+?>

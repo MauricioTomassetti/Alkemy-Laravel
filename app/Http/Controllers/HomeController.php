@@ -3,38 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Application;
-use App\Category;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index(Category $categories, Application $application)
+    public function index(Application $application)
     {
+        $categories = $application->getCategories();
+        $allapps = $application->getAppsCanBuy();
 
         if (Auth::check()) {
-            $appsNotBuy = $application->whereNotIn('id', function ($query) {
-                $query->select('application_id')->from('applications_users_states')
-                    ->where('applications_users_states.user_id', Auth::id())
-                    ->where('state_id', 2)->get();
-            })
-                ->get();
-
-            if ($appsNotBuy->count() == 0)
-                return view('home', ['categories' => $categories->all(), 'allapps' => [], 'message' => 'Su usuario, ya no tiene mas aplicaciones para poder comprar']);
-            else
-                return view('home', ['categories' => $categories->all(), 'allapps' => $appsNotBuy, 'message' => '']);
+            if ($allapps->count() == 0)
+                return view('home', compact('categories','allapps'))->with('message',config('constants.app_no_more_buy'));
         }
 
-        return view('home', ['categories' => $categories->all(), 'allapps' => $application->all(), 'message' => '']);
+        return view('home', compact('categories','allapps'));
     }
 }

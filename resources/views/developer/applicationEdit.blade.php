@@ -28,7 +28,7 @@
                     <hr>
                     <div class="form-group">
                         <label for="Precio"><strong>Precio de venta</strong></label>
-                        <input type="number" name="price" class="form-control text-center" id="price" aria-describedby="categoryHelp" value={{$app->price}}>
+                        <input type="number" name="price"  step="any" min="0.1" max="9999.99" class="form-control text-center" id="price" aria-describedby="categoryHelp" value={{$app->price}}>
                     </div>
                     <hr>
                     <div class="form-group">

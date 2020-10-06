@@ -74,15 +74,30 @@ function removeItemFollow(id){
                     _token: "{{csrf_token()}}"
                 },
                 success: function (msg) {
-                    let title = $('<div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido completada con exito</h4></div>');
+                    let buySuccess = $('<img class="loadergif" src="{{ asset("images/check.gif") }}" width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido completada con exito.</h4></div><strong class="text-center">Regresando al app market..</strong>');
                     $('button[name=' + id + ']').prop('disabled', true);
-                    $('#' + id).prop('disabled', false);
-                    //$('#card-'+id).flip();
-                    $('.front').toggleClass('flipped');
-
-                   // $('#card-'+id).css({opacity: .5});
-                   // $('.success-message-buy-'+id).append(title);
-                   // $('.success-message-buy-'+id).css({opacity: .9});
+                    $('#sucessBuy').modal('show')
+                    $('#successMessageBuy').empty();
+                    setTimeout(function(){
+                            $('#card-' + id).remove();
+                            $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
+                            setTimeout(function(){
+                                $('#sucessBuy').modal("hide").delay(4000);
+                            }, 5000);
+                        }, 2500);
+                    },
+                    error: function(msg){
+                    let buySuccess = $('<img class="loadergif" src="{{ asset("images/error.gif") }}" width="100%" ><div class="alert alert-danger"><h4 class="alert-heading">Su compra no a podido ser realizada.</h4></div><strong class="text-center">Regresando al app market..</strong>');
+                    $('button[name=' + id + ']').prop('disabled', true);
+                    $('#sucessBuy').modal('show')
+                    $('#successMessageBuy').empty();
+                    setTimeout(function(){
+                           
+                            $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
+                            setTimeout(function(){
+                                $('#sucessBuy').modal("hide").delay(4000);
+                            }, 5000);
+                        }, 2500);
                 }
             });
         }
@@ -97,17 +112,29 @@ function removeItemFollow(id){
                 success: function (msg) {
                     $('button[name=' + id + ']').prop('disabled', false);
                     $('#' + id).prop('disabled', true);
-                }
-            })
-
-        }
-
-        if (($(this).attr('formaction'))==='detail') {
-            $.ajax({
-                url: 'appDetail/' + id,
-                type: "GET",
-                success: function (msg) {
-                    $('#myModal').modal('show');
+                    let buyCancel = $('<img class="loadergif" src="{{ asset("images/cancel.gif") }}" width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido cancelada con exito.</h4></div>');
+                    $('button[name=' + id + ']').prop('disabled', true);
+                    $('#cancelBuy').modal('show')
+                    $('#cancelMessageBuy').empty();
+                    setTimeout(function(){
+                            $('#card-' + id).remove();
+                            $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
+                            setTimeout(function(){
+                                $('#cancelBuy').modal("hide");
+                            }, 5000);
+                        }, 2500);
+                },
+                error: function(msg){
+                    let buyCancel = $('<img class="loadergif" src="{{ asset("images/error.gif") }}" width="100%" ><div class="alert alert-danger"><h4 class="alert-heading">Su compra no a podido ser cancelada.</h4></div><strong class="text-center">Regresando al app market..</strong>');
+                    $('button[name=' + id + ']').prop('disabled', true);
+                    $('#cancelBuy').modal('show')
+                    $('#cancelMessageBuy').empty();
+                    setTimeout(function(){
+                            $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
+                            setTimeout(function(){
+                                $('#cancelBuy').modal("hide").delay(4000);
+                            }, 5000);
+                        }, 2500);
                 }
             })
 

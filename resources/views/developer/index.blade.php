@@ -4,19 +4,19 @@
 <div class="container">
   <div class="row">
    <div class="col-sm-9">
-    @if(session('message'))
-      <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-        <strong>Exito! </strong>{{ session('message') }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+   <div class="col align-self-center">
+   @if (!empty($messageCreateAppSuccess))
+    <div class="alert alert-success mt-2">{{ $messageCreateAppSuccess }}</div>
+    </div>
     @endif
-      @if($messageNotAppCreated)
-      @include('messages.messageNotAppCreated')
-      @endif
+
+    @if (!empty($message))
+    <div class="alert alert-success mt-2">{{ $message }}</div>
+    </div>
+    @else
+    </div>
       <div class="row">
-      @foreach($myapps as $apps)
+      @foreach($myApps as $apps)
       <div class="col-4">
         <div class="card mb-4 shadow-sm">
           <img src="{{ asset( $apps->image_src) }}" class="img-fluid" alt="{{ $apps->name }}">
@@ -31,8 +31,8 @@
                     Editar Applicacion
                 </button>
                 </a>
-                <a href="{{ route('home') }}">
-                <button id="delete" type="submit" class="btn btn-danger">
+                <a href="{{ route('me.delete', $apps->slug) }}">
+                <button id="delete" class="btn btn-danger" onclick="return confirm('Si elimina la apliacion {{ $apps->name }} no podra recuperarla, ¿Desea continuar?');">
                     Eliminar Applicacion
                 </button>
             </a>
@@ -43,6 +43,7 @@
     </div>
         @endforeach
    </div>
+   @endif
     </div>
     <div class="col-sm-3">
       <div class="card">

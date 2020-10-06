@@ -17,11 +17,12 @@ class Client
      * @return mixed
      */
     public function handle($request, Closure $next)
-
     {
-        if (Auth::user()->role->first()->name_role == "Cliente") {
+     
+        if (Auth::check() && Auth::user()->role->first()->name_role == "Cliente") {
             return $next($request);
         }
-        abort(403);
+
+        return back();
     }
 }
