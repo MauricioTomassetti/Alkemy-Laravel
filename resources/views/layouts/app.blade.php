@@ -4,14 +4,10 @@
 @include('layouts.head')
 </head>
 <body>
-  <div id="app">
    @include('layouts.navigation')
-  </div>
-  <main role="main">
-    @include('layouts.hero')
-  </main>
-  <main class="py-4">
+   @include('layouts.hero')
+  <section>
     @yield('content')
-  </main>
+  </section>
 </body>
 </html>

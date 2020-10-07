@@ -11,17 +11,16 @@ use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
- 
+
     public function index(Application $application, Category $categories)
     {
         $allapps = $application->getAppsBought();
         $categories = $application->getCategories();
 
-            if ($allapps->count() == 0 )
-                    return view('client.index', compact('categories','allapps'))->with('message', config('constants.app_no_bought'));          
-       
-            return view('client.index',compact('categories','allapps'));
+        if ($allapps->count() == 0)
+            return view('client.index', compact('categories', 'allapps'))->with('message', config('constants.app_no_bought'));
 
+        return view('client.index', compact('categories', 'allapps'));
     }
 
     /**
@@ -44,7 +43,8 @@ class ClientController extends Controller
     {
 
         $user = User::findOrFail(Auth::id());
-        $applicationUserState->users()->attach($user, ['application_id' =>$request->input('app_id'),'state_id' => 2]);
+        $applicationUserState->users()->attach($user, ['application_id' => $request->input('app_id'), 'state_id' => 2]);
+        return response()->json(['url' => route('home')]);
     }
 
     /**
@@ -87,9 +87,8 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(ApplicationUserState $applicationUserState, Request $request)
-    {//tratar de poner el dettach
+    { //tratar de poner el dettach
         //$applicationUserState->applications()->detach($request->input('app_id'));
         $applicationUserState->where('application_id', $request->input('app_id'))->where('user_id', Auth::id())->where('state_id', 2)->delete();
-            
     }
 }

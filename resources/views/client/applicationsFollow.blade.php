@@ -25,11 +25,16 @@
                                         <tr>
                                             <th scope="col">Nombre</th>
                                             <th scope="col">Precio</th>
+                                            @auth
+                                            <th>Finalizar compra</th>
+                                            @endauth
                                             <th scope="col">Dejar de seguir</th>
                                         </tr>
                                 </thead>
                                 <tbody id="desirelist">
-                                        <tr></tr>
+                                            @auth
+                                                <td id="buybutton"></td>
+                                            @endauth
                                 </tbody>
                             </table>
                         </div>

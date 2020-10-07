@@ -13,11 +13,10 @@ class CreateApplicationsLogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('applications_logs', function (Blueprint $table) {
+        Schema::create('application_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('application_id');
-            $table->double('old_price');
-            $table->double('new_price');
+            $table->integer('application_id');
+            $table->double('price');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateApplicationsLogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('applications_logs');
+        Schema::dropIfExists('application_logs');
     }
 }

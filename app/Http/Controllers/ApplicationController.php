@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\ApplicationUserState;
 use App\Application;
+use App\ApplicationLog;
 use App\Category;
 use App\Http\Requests\ApplicationStoreRequest;
+use App\LogApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ApplicationService;
-
+use App\User;
 
 class ApplicationController extends Controller
 
@@ -28,6 +30,7 @@ class ApplicationController extends Controller
 
     public function create(Category $category)
     {
+        //Consulto las categorias que hay disponible para asignar
         $listCategory = $category->all();
 
         return view('developer.applicationCreate', compact('listCategory'));
@@ -35,13 +38,23 @@ class ApplicationController extends Controller
 
 
     /**
-     *Comentario: El mensaje No se muestra luego de crear una App. 
+     *Comentario: El mensaje No se muestra luego de crear una App.
      **/
-    public function store(Application $application, ApplicationUserState $applicationUserState, ApplicationService $appStore, ApplicationStoreRequest $request)
+    public function store(Application $application, ApplicationUserState $applicationUserState, ApplicationLog $logprice, ApplicationService $appStore, ApplicationStoreRequest $request)
     {
         $data = $request->all();
 
-        $appStore->storeImage($data, $application, $applicationUserState, $request);
+        //Valido la imagen de carga apoyandome en una clase.
+        $appDate = $appStore->storeImage($data, $application, $request);
+
+        //Creo un registro de applicacion
+        $appCreate = $application->create($appDate);
+
+        //Creo un registro que relaciona usuario - applicacion - estado
+        $applicationUserState->user()->attach(Auth::id(), ['application_id' => $appCreate->id, 'state_id' => 4]);
+
+        //Creo un registro del precio y la applicacion.
+        $logprice->create(['application_id' => $appCreate->id, 'price' => $appCreate->price]);
 
         return redirect()->route('me.list', Auth::user()->name)->with('messageCreateAppSuccess', config('constants.app_create'));
     }
@@ -49,6 +62,11 @@ class ApplicationController extends Controller
     public function show(Application $application)
 
     {
+        $appWasPurcharse = $application->getDetailApplicationsCanBuy($application->id);
+
+        if ($appWasPurcharse > 0)
+            return view('client.appDetail')->with('message', 'Usted ya pose esta applicacion en su perfil');
+
         return view('client.appDetail', compact('application'));
     }
 
@@ -62,13 +80,12 @@ class ApplicationController extends Controller
     }
 
 
-    /**
-     *Comentario: Cuando llamo directamente al modelo, sin ponerle un where ocurre un error de argumentos cuando quiero actualizar la imagen. 
-     **/
-    public function update(Application $application, ApplicationService $appUpdate, Request $request)
+    public function update(Application $application, ApplicationService $appUpdate, ApplicationLog $logprice, Request $request)
     {
 
-        $application->where('id', $application->id)->update($appUpdate->updateImage($application, $request));
+        $application->update([$appUpdate->updateImage($application, $request)]);
+        //Creo un registro del precio y la applicacion.
+        $logprice->create(['application_id' => $application->id, 'price' => $request->price]);
 
         return redirect()->route('me.list', Auth::user()->name)->with('message', 'Aplicacion actualizada con exito!');
     }
@@ -81,19 +98,30 @@ class ApplicationController extends Controller
 
         $application->where('id', $application->id)->update(['is_online' => false]);
 
-        $applicationUserState->where('application_id', $application->id)->where('user_id', Auth::id())->where('state_id', 4)->delete();
+        //$applicationUserState->where('application_id', $application->id)->where('user_id', Auth::id())->where('state_id', 4)->delete();
+        $applicationUserState->user()->detach();
+
 
         return redirect()->route('me.list', Auth::user()->name)->with('message', 'Aplicacion Eliminada!');
     }
 
-    public function showAppNotBuyWhitCategory(Application $application, Category $categories) {
-
-        $allapps = $application->getAppsCanBuy()->where('id',$categories->id);
+    public function showAppNotBuyWhitCategory(Application $application, Category $category)
+    {
+        $allapps = $application->getAppsCanBuyWhitCategory($category->id);
         $categories = $application->getCategories();
 
         if ($allapps->count() == 0)
-            return view('client.index', compact('categories','allapps'))->with('message' , config('constants.app_no_more_buy'));
+            return view('client.index', compact('categories', 'allapps'))->with('message', config('constants.app_no_more_buy'));
         return view('client.index',  compact('categories', 'allapps'));
     }
 
+    public function  showListWhitVote(Application $application)
+    {
+        $allapps = $application->getListWhitVotes();
+        $categories = $application->getCategories();
+
+        if ($allapps->count() == 0)
+            return view('client.index', compact('categories', 'allapps'))->with('message', config('constants.app_no_more_buy'));
+        return view('client.index',  compact('categories', 'allapps'));
+    }
 }

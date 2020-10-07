@@ -1,3 +1,4 @@
+<section>
 <div class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container d-flex justify-content-between">
           <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center">
@@ -24,7 +25,7 @@
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
                               <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                   document.getElementById('logout-form').submit();">
+                                                   document.getElementById('logout-form').submit();" onsubmit="localStorage.clear();">
                                   Salir
                               </a>
                               @if(Auth::user()->role->first()->name_role == 'Desarrollador' )
@@ -41,7 +42,6 @@
                                 </a>
                                 @endif
 
-
                               <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                   @csrf
                               </form>
@@ -49,3 +49,4 @@
                       </li>
                       @endguest
         </div>
+    </section>

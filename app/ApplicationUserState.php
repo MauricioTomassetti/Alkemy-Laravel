@@ -14,13 +14,13 @@ class ApplicationUserState extends Model
     protected $fillable = ['application_id', 'user_id', 'state_id'];
 
 
-    public function users()
+    public function user()
     {
         return $this->belongsToMany(User::class, 'applications_users_states', 'application_id', 'user_id')->withPivot('state_id')->withTimestamps();
     }
 
     public function application()
     {
-        return $this->belongsTo(Application::class, 'applications_users_states');
+        return $this->belongsToMany(Application::class);
     }
 }

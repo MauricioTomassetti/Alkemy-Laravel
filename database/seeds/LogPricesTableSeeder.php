@@ -13,26 +13,21 @@ class LogPricesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('applications_logs')->insert([
+        DB::table('application_logs')->insert([
             'application_id' => 1,
-            'old_price' => 125.37,
-            'new_price' => 284.37,
+            'price' => 125.37,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
-
-        DB::table('applications_logs')->insert([
+        DB::table('application_logs')->insert([
             'application_id' => 2,
-            'old_price' => 100.37,
-            'new_price' => 300.37,
+            'price' => 120.37,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
-
-        DB::table('applications_logs')->insert([
+        DB::table('application_logs')->insert([
             'application_id' => 3,
-            'old_price' => 110.37,
-            'new_price' => 380.37,
+            'price' => 213.37,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);

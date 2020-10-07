@@ -26,6 +26,7 @@ function followTable(item){
     let dataprice = $('<td></td>').text(item[key].price);
     let notFollow = $('<td class="text-center" onclick="removeItemFollow('+item[key].app+')"></td>').text('x')
 
+
     row.append(dataname);
     row.append(dataprice);
     row.append(notFollow);
@@ -50,13 +51,18 @@ function removeItemFollow(id){
     localStorage.setItem('follow', JSON.stringify(appsFollow));
 }
 
-
-    $(document).ready(function(e){
-            let oldItems = JSON.parse(localStorage.getItem('follow'))|| [];
+function loadFollowsItems(){
+    let oldItems = JSON.parse(localStorage.getItem('follow'))|| [];
          //Recorro las app que deje siguiendo, guardando en un localStorage
         oldItems.forEach(element => {
             followTable(element);
         });
+}
+
+
+    $(document).ready(function(e){
+
+    loadFollowsItems()
 
     $('.submitForm').click(function(e){
             e.preventDefault();
@@ -73,7 +79,7 @@ function removeItemFollow(id){
                     app_id: id,
                     _token: "{{csrf_token()}}"
                 },
-                success: function (msg) {
+                success: function (data) {
                     let buySuccess = $('<img class="loadergif" src="{{ asset("images/check.gif") }}" width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido completada con exito.</h4></div><strong class="text-center">Regresando al app market..</strong>');
                     $('button[name=' + id + ']').prop('disabled', true);
                     $('#sucessBuy').modal('show')
@@ -83,8 +89,11 @@ function removeItemFollow(id){
                             $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
                             setTimeout(function(){
                                 $('#sucessBuy').modal("hide").delay(4000);
+                                window.location = data.url
+                                removeItemFollow(id);
                             }, 5000);
                         }, 2500);
+
                     },
                     error: function(msg){
                     let buySuccess = $('<img class="loadergif" src="{{ asset("images/error.gif") }}" width="100%" ><div class="alert alert-danger"><h4 class="alert-heading">Su compra no a podido ser realizada.</h4></div><strong class="text-center">Regresando al app market..</strong>');
@@ -92,7 +101,7 @@ function removeItemFollow(id){
                     $('#sucessBuy').modal('show')
                     $('#successMessageBuy').empty();
                     setTimeout(function(){
-                           
+
                             $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
                             setTimeout(function(){
                                 $('#sucessBuy').modal("hide").delay(4000);
@@ -121,6 +130,7 @@ function removeItemFollow(id){
                             $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
                             setTimeout(function(){
                                 $('#cancelBuy').modal("hide");
+                                location.reload()
                             }, 5000);
                         }, 2500);
                 },
@@ -133,13 +143,12 @@ function removeItemFollow(id){
                             $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
                             setTimeout(function(){
                                 $('#cancelBuy').modal("hide").delay(4000);
+
                             }, 5000);
                         }, 2500);
                 }
             })
-
         }
-
   })
 });
 </script>
