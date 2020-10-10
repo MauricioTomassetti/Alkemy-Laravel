@@ -1,9 +1,20 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Roboto:wght@300&display=swap"');
+@import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css");
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
 
 // Variables
 @import 'variables';
 
+// Normalize
+@import 'normalize';
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// auth style
+@import 'auth';
+
+// custom style
+@import 'custom';
+
+

@@ -1,0 +1,20 @@
+a {
+  text-decoration: none; /* no underline */
+}
+
+.jumbotron {
+  background-image:  url("../../public/images/jumbotron.png"); 
+  background-size: cover;
+}
+
+.jumbotron h1{
+  text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff
+}
+
+.background-main{
+  background-image: url("../../public/images/background-home.jpg"); 
+}
+
+.card-app:hover{
+  box-shadow: 5px 10px 18px #888888;
+}

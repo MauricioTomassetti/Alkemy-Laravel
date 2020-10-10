@@ -2,126 +2,144 @@
 
 namespace App\Http\Controllers;
 
-use App\ApplicationUserState;
 use App\Application;
-use App\ApplicationLog;
 use App\Category;
 use App\Http\Requests\ApplicationStoreRequest;
-use App\LogApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Services\ApplicationService;
-use App\User;
+use App\Services\ApplicationDeveloperService;
+use App\Services\ApplicationClientService;
+
 
 class ApplicationController extends Controller
 
 {
 
-    public function index(Application $application)
+    public function index(ApplicationDeveloperService $application)
     {
         $myApps = $application->getApplicationForDeveloper();
 
         if ($myApps->count() == 0)
-            return view('developer.index')->with('message', config('constants.no_app_create'));
+            return view('developer.index', compact('myApps'))->with('message', config('constants.no_app_create'));
 
         return view('developer.index', compact('myApps'));
     }
 
 
-    public function create(Category $category)
+    public function create(ApplicationClientService $category)
     {
-        //Consulto las categorias que hay disponible para asignar
-        $listCategory = $category->all();
+        $listCategory = $category->getCategories();
 
         return view('developer.applicationCreate', compact('listCategory'));
     }
 
-
-    /**
-     *Comentario: El mensaje No se muestra luego de crear una App.
-     **/
-    public function store(Application $application, ApplicationUserState $applicationUserState, ApplicationLog $logprice, ApplicationService $appStore, ApplicationStoreRequest $request)
+    public function store(ApplicationDeveloperService $application, ApplicationStoreRequest $request)
     {
-        $data = $request->all();
-
-        //Valido la imagen de carga apoyandome en una clase.
-        $appDate = $appStore->storeImage($data, $application, $request);
-
-        //Creo un registro de applicacion
-        $appCreate = $application->create($appDate);
-
-        //Creo un registro que relaciona usuario - applicacion - estado
-        $applicationUserState->user()->attach(Auth::id(), ['application_id' => $appCreate->id, 'state_id' => 4]);
-
-        //Creo un registro del precio y la applicacion.
-        $logprice->create(['application_id' => $appCreate->id, 'price' => $appCreate->price]);
+        
+        $application->createApp($request);
 
         return redirect()->route('me.list', Auth::user()->name)->with('messageCreateAppSuccess', config('constants.app_create'));
     }
 
-    public function show(Application $application)
-
+    public function show(ApplicationClientService $app, Application $application)
     {
-        $appWasPurcharse = $application->getDetailApplicationsCanBuy($application->id);
+      
+        $showButtonDesired = true;
+      
+        $appState = $app->getApplicationsDetail($application);
+        
+        if (Auth::check()) {
+            $user_rol = Auth::user()->roles->first()->name_role;
 
-        if ($appWasPurcharse > 0)
-            return view('client.appDetail')->with('message', 'Usted ya pose esta applicacion en su perfil');
+            if (!$appState["Bought"])
+                return view('client.appDetail')->with('message', config('constants.app_obtained_yet'));
 
-        return view('client.appDetail', compact('application'));
+            elseif (!$appState["DesiredApp"]) {
+                $showButtonDesired = !$showButtonDesired = true;;
+                return view('client.appDetail', compact('application', 'user_rol','showButtonDesired'));
+
+            } else
+                return view('client.appDetail', compact('application','user_rol','showButtonDesired'));
+        }
+
+        return view('client.appDetail', compact('application','showButtonDesired'));
     }
 
 
-    public function edit(Application $application)
+    public function edit(ApplicationDeveloperService $app, Application $application)
     {
 
-        $app = $application->getFormForEdit();
-
+        $app = $app->getFormForEdit($application);
+      
         return view('developer.applicationEdit', compact('app'));
     }
 
 
-    public function update(Application $application, ApplicationService $appUpdate, ApplicationLog $logprice, Request $request)
+    public function update(ApplicationDeveloperService $app, Application $application,Request $request)
     {
+        $app->updateApp($application, $request);
 
-        $application->update([$appUpdate->updateImage($application, $request)]);
-        //Creo un registro del precio y la applicacion.
-        $logprice->create(['application_id' => $application->id, 'price' => $request->price]);
-
-        return redirect()->route('me.list', Auth::user()->name)->with('message', 'Aplicacion actualizada con exito!');
+        return redirect()->route('me.list', Auth::user()->name);
     }
 
-    /**
-     *Comentario: Cuando llamo directamente al modelo, sin ponerle un where referenciandolo ocurre un error de argumentos. cuando quiero actualizar el estado.
-     **/
-    public function destroy(Application $application, ApplicationUserState $applicationUserState)
+
+    public function destroy(ApplicationDeveloperService $app, Application $application)
     {
+        $app->deleteApplication($application);
 
-        $application->where('id', $application->id)->update(['is_online' => false]);
-
-        //$applicationUserState->where('application_id', $application->id)->where('user_id', Auth::id())->where('state_id', 4)->delete();
-        $applicationUserState->user()->detach();
-
-
-        return redirect()->route('me.list', Auth::user()->name)->with('message', 'Aplicacion Eliminada!');
+        return redirect()->route('me.list', Auth::user()->name);
     }
 
-    public function showAppNotBuyWhitCategory(Application $application, Category $category)
+
+    public function desiredApp(ApplicationClientService $app, Application $application)
+    {
+    
+       $appDesired = $app->getApplicationDesired($application);
+
+        if( $appDesired->count() > 0 )
+        return response()->json(['message' => config('constants.app_desired_add')], 405); 
+
+        $application->users()->attach(Auth::id(), ['application_id' => $application->id, 'state_id' => 1]);
+
+        return response()->json(['message'=> config('constants.app_desired')]);
+        
+    }
+
+
+    public function removeDesiredApp(Application $application)
+    {
+
+        $application->users()->detach();
+        return response()->json(['message'=> config('constants.app_desired')]);
+        
+    }
+
+
+
+    public function showDesiredApp(ApplicationClientService $application,Request $request)
+    {
+
+        $appsDesired = $application->getAppsDesired($request->id);
+
+        return response()->json(['appsDesired'=> $appsDesired]);
+    }
+
+
+    public function showAppNotBuyWhitCategory(ApplicationClientService $application, Category $category)
     {
         $allapps = $application->getAppsCanBuyWhitCategory($category->id);
-        $categories = $application->getCategories();
 
         if ($allapps->count() == 0)
-            return view('client.index', compact('categories', 'allapps'))->with('message', config('constants.app_no_more_buy'));
-        return view('client.index',  compact('categories', 'allapps'));
+            return view('client.index', compact('allapps'))->with('message', config('constants.app_no_more_buy'));
+        return view('client.index',  compact('allapps'));
     }
 
-    public function  showListWhitVote(Application $application)
+    public function  showListWhitVote(ApplicationClientService $application)
     {
         $allapps = $application->getListWhitVotes();
-        $categories = $application->getCategories();
 
         if ($allapps->count() == 0)
-            return view('client.index', compact('categories', 'allapps'))->with('message', config('constants.app_no_more_buy'));
-        return view('client.index',  compact('categories', 'allapps'));
+            return view('client.index', compact('allapps'))->with('message', config('constants.app_no_more_buy'));
+        return view('client.index',  compact('allapps'));
     }
 }

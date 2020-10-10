@@ -1,69 +1,45 @@
 @extends('layouts.app')
-
 @section('content')
-<div class="container">
-  <div class="row">
-   <div class="col-sm-9">
-   <div class="col align-self-center">
-   @if (!empty($messageCreateAppSuccess))
-    <div class="alert alert-success mt-2">{{ $messageCreateAppSuccess }}</div>
-    </div>
-    @endif
-
-    @if (!empty($message))
-    <div class="alert alert-success mt-2">{{ $message }}</div>
-    </div>
-    @else
-    </div>
-      <div class="row">
-      @foreach($myApps as $apps)
-      <div class="col-4">
-        <div class="card mb-4 shadow-sm">
-          <img src="{{ asset( $apps->image_src) }}" class="img-fluid" alt="{{ $apps->name }}">
-          <div class="card-body">
-            <p class="card-text"> {{ $apps->price }}</p>
-            <p class="card-text"> {{ $apps->name }}</p>
-            <p class="card-text"> {{ $apps->description }}</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="btn-group">
-                <a href="{{ route('me.edit', $apps->slug) }}">
-                <button class="btn btn-warning">
-                    Editar Applicacion
-                </button>
-                </a>
-                <a href="{{ route('me.delete', $apps->slug) }}">
-                <button id="delete" class="btn btn-danger" onclick="return confirm('Si elimina la apliacion {{ $apps->name }} no podra recuperarla, ¿Desea continuar?');">
-                    Eliminar Applicacion
-                </button>
-            </a>
-              </div>
+<section class="container-fluid">
+    <h2 class="text-center">Panel de administración de applicaciones</h2>
+    <hr>
+</section>
+<section class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="row">
+                @forelse($myApps as $apps)
+                <div class="col-md-4" id="card-{{ $apps->id }}">
+                    <div class="card card-app mt-2">
+                        <img src="{{ asset( $apps->image_src) }}" class="card-img-top" alt="{{ $apps->name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $apps->name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">$ {{ $apps->price }}</h6>
+                            <p class="card-text description">{{ $apps->description }}</p>...Continuar leyendo
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ route('me.detail',$apps->slug)}}"> <button type="button" class="btn btn-primary ">Detalles</button></a>
+                            <a href="{{ route('me.edit', $apps->slug) }}"><button type="button" class="btn btn-secondary">Editar</button></a>
+                            <a href="{{ route('me.delete', $apps->slug) }}"><button id="delete" class="ml-1 btn btn-danger" onclick="return confirm('Si elimina la apliacion {{ $apps->name }} no podra recuperarla, ¿Desea continuar?');">Eliminar</button></a>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-md-12 text-center">
+                    <div class="alert alert-success mt-2">{{ $message }}</div>
+                @endforelse
+                </div>
             </div>
-          </div>
-        </div>
-    </div>
-        @endforeach
-   </div>
-   @endif
-    </div>
-    <div class="col-sm-3">
-      <div class="card">
-        <div class="card-header">Mis Operaciones</div>
-        <div class="card-body">
-          Operaciones sobre mis aplicaciones
-          <div class="container">
-            <div class="row row-cols-2">
-              <div class="col mt-2">
-                <a href="{{ route('me.create') }}">
-                  <button class="btn btn-primary">
-                  Agregar Applicacion
-                </button>
-            </a>
-              </div>
+            <div class="col-md">
+                <div class="card">
+                    <div class="card-header"><strong>Menu Apps</strong></div>
+                    <div class="card-body">
+                        <div class="btn-group justify-content-between align-items-center">
+                            <a href="{{ route('me.create') }}"><button class="mt-2 btn btn-primary">Agregar Aplicacion</button></a>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+</section>
 @endsection

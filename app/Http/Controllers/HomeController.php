@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Application;
 use Illuminate\Support\Facades\Auth;
+use App\Services\ApplicationClientService;
 
 class HomeController extends Controller
 {
-    public function index(Application $application)
+    public function index(ApplicationClientService $application)
     {
-        $categories = $application->getCategories();
+        
         $allapps = $application->getAppsCanBuy();
 
         if (Auth::check()) {
             if ($allapps->count() == 0)
-                return view('home', compact('categories', 'allapps'))->with('message', config('constants.app_no_more_buy'));
+                return view('home', compact('allapps'))->with('message', config('constants.app_no_more_buy'));
         }
 
-        return view('home', compact('categories', 'allapps'));
+        return view('home', compact('allapps'));
     }
 }

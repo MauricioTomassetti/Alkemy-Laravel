@@ -18,5 +18,3 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-//Route::post('buy', 'ClientController@store');
-//Route::delete('cancelbuy/{id}', 'ClientController@destroy');

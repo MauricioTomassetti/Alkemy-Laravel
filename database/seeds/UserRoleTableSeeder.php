@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,14 +13,18 @@ class UserRoleTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('user_role')->insert([
-            'id_user' => 10,
-            'id_rol' => 1,
+        DB::table('roles_users')->insert([
+            'user_id' => 1,
+            'role_id' => 2,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
-        DB::table('user_role')->insert([
-            'id_user' => 11,
-            'id_rol' => 2,
+        DB::table('roles_users')->insert([
+            'id_user' => 2,
+            'id_rol' => 1,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
 }

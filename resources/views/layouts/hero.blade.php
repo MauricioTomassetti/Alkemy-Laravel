@@ -1,7 +1,7 @@
 <section class="jumbotron text-center">
           <div class="container">
             <h1>Bienvenido a Alkemy Play Store</h1>
-            <p class="lead text-muted">Aqui podras recorrer nuestras aplicaciones, saber mas sobre cada una de ellas y adquirirlas</p>
+            <p class="lead text-muted">Recorre nuestras applicaciones</p>
             <p>
               @guest
               @if (Route::has('register'))

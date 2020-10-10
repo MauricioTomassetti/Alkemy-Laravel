@@ -23,9 +23,5 @@ class RolesTableSeeder extends Seeder
             'name_role' => 'Cliente',
             'description_role' => 'Permite acceso al sistema como Cliente',
         ]);
-        DB::table('roles')->insert([
-            'name_role' => 'Visitante',
-            'description_role' => 'Permite acceso al sistema como Cliente',
-        ]);
     }
 }

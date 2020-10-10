@@ -52,7 +52,7 @@ class RegisterController extends Controller
 
     public function showRegistrationForm(Role $rol)
 {
-    $roles=$rol::all();
+    $roles = $rol::all();
     return view('auth.register', compact('roles'));
 }
 
@@ -70,6 +70,8 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'type-user' => ['required', 'string'],
         ]);
+        
+        
     }
 
     /**
@@ -86,7 +88,7 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        $user->role()->save(Role::where('id', $data['type-user'])->first());
+        $user->roles()->save(Role::where('id', $data['type-user'])->first());
         
         return $user;
     }

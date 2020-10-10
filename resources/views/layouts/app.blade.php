@@ -3,11 +3,12 @@
 <head>
 @include('layouts.head')
 </head>
-<body>
+<body class="background-main">
    @include('layouts.navigation')
    @include('layouts.hero')
-  <section>
-    @yield('content')
-  </section>
+      @yield('content')
+      @yield('appDetail')
+  @include('layouts.footer')
+  @include('layouts.script')
 </body>
 </html>

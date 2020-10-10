@@ -19,7 +19,7 @@ class Client
     public function handle($request, Closure $next)
     {
      
-        if (Auth::check() && Auth::user()->role->first()->name_role == "Cliente") {
+        if (Auth::check() && Auth::user()->roles->first()->name_role == "Cliente") {
             return $next($request);
         }
 

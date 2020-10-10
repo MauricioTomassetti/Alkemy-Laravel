@@ -1,154 +1,247 @@
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-{{-- <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"> --}}
-
 <script type="text/javascript">
+$(document).ready(function(e) {
+    /*
+    * Logica para la compra y cancelacion de applicaciones
+    */
+        $('.submitForm').click(function(e) {
+            e.preventDefault();
 
-function addRow(id,price,name) {
-    let oldItems = JSON.parse(localStorage.getItem('follow')) || [];
-    let newItem = {};
-    newItem[id] = {'app':id,'name':name,'price':price};
+            let id = $(this).attr('idapp');
 
-    followTable(newItem);
+            if (($(this).attr('formaction')) === 'buy') {
 
-    oldItems.push(newItem);
+                let action = 'Compra'
+                let buttonModal = '#sucessBuy';
+                let buttonMessage = '#successMessageBuy'
+                let Cardid = '#card-' + id
+                let ButtonId = 'button[name=' + id + ']'
 
-    localStorage.setItem('follow', JSON.stringify(oldItems));
+                $.ajax(
+                    {
+                    url: '/api/buy',
+                    type: "POST",
+                    data: {
+                        app_id: id,
+                        _token: "{{csrf_token()}}"
+                    },
+                    success: function(data) {
+                        let image = "src={{ asset('images/check.gif') }}";
+                        messageOperation(image, action, Cardid, ButtonId, buttonModal, buttonMessage, data);
 
-}
+                    },
+                    error: function(msg) {
+                        let image = "src={{ asset('images/error.gif') }}"
+                        messageOperation(image, action, Cardid, ButtonId, buttonModal, buttonMessage, data);
+                    }
+                });
+            }
 
-function followTable(item){
+            if (($(this).attr('formaction')) === 'cancel') {
 
-    let key = Object.keys(item);
+                let action = 'Cancelacion'
+                let buttonModal = '#cancelBuy';
+                let buttonMessage = '#cancelMessageBuy'
+                let Cardid = '#card-' + id
+                let ButtonId = 'button[name=' + id + ']'
 
-    let row = $('<tr id="followRow-'+item[key].app +'"></tr');
+                $.ajax(
+                    {
+                    url: '/api/cancelbuy/' + id,
+                    type: "DELETE",
+                    data: {
+                        app_id: id,
+                        _token: "{{csrf_token()}}"
+                    },
+                    success: function(data) {
+                        let image = "src={{ asset('images/cancel.gif') }}"
+                        messageOperation(image, action, Cardid, ButtonId, buttonModal, buttonMessage, data);
+                    },
+                    error: function(data) {
+                        let image = "src={{ asset('images/error.gif') }}"
+                        messageOperation(image, action, Cardid, ButtonId, buttonModal, buttonMessage, data);
+                    }
+                })
+            }
+        })
 
-    let dataname = $('<td></td>').text(item[key].name);
-    let dataprice = $('<td></td>').text(item[key].price);
-    let notFollow = $('<td class="text-center" onclick="removeItemFollow('+item[key].app+')"></td>').text('x')
+        function messageOperation(image, action, Cardid, ButtonId, buttonModal, buttonMessage, data) {
+            console.log(image);
+            let htmlMessage = $('<img class="loadergif" ' + image + ' width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su '+ 
+            action + ' ha sido completada con exito.</h4></div><strong class="text-center">Regresando al app market..</strong>');
+            $(ButtonId).prop('disabled', true);
+            $(buttonModal).modal('show')
+            $(buttonMessage).empty();
+            setTimeout(function() {
+                $(Cardid).remove();
+                $(buttonMessage).append(htmlMessage).delay(4000).fadeIn('slow');
+                setTimeout(function() {
+                    $(buttonModal).modal("hide").delay(4000);
+                    window.location = data.url
+                    removeItemFollow(id);
+                }, 5000);
+            }, 2500);
+        }
+     /* 
+     *Logica del Boton Agregar a deseados 
+    */
+        $('.desired').click(function(e) {
+            e.preventDefault();
 
+            let id = $(this).attr('idapp');
+            $.ajax({
+                url: '../app/' + id,
+                type: "POST",
+                data: {_token: "{{csrf_token()}}"},
+                success: function(data) {
+                    notifyMessage(data);
+                },
+                error: function(data) {
+                    notifyMessage(data);
+                }
+            })
+        })
+       
+        function notifyMessage(data){
+            let notify = $.notify('<div><strong>Agregado a deseados! </strong></div> ' + data.message, { type: 'success' });
+                $('.desired').attr('disabled', true); 
+            }
 
-    row.append(dataname);
-    row.append(dataprice);
-    row.append(notFollow);
+ /*
+    * Logica para la tabla de aplicaciones deseadas.
+    */
+        $('#desiredListUser').click(function(e) {
+            e.preventDefault();
+            let name = $(this).attr('userapp');
 
-    $('#desirelist').append(row);
-    $('#'+item[key].app).prop('disabled', true);
+            if (name == '') {
+                $('#desirelist').empty();
+                return loadFollowsItems();
+            }
+            $.ajax({
+                url: '../me/app/list/'+name,
+                type: "GET",
+                success: function(data) {
+                    $('#desirelist').empty();
 
-}
+                    data.appsDesired.forEach(element => {
+                        let newItem = {};
+                        newItem[element.id] = {
+                            'app': element.id,
+                            'name': element.name,
+                            'price': element.price
+                        };
+                        followTable(newItem);
+                    });
+                },
+                error: function(data) {
+                    var notify = $.notify('<div><strong>Error al mostrar las apps </strong></div>', {
+                        type: 'danger',
+                    });
+                }
+            })
 
-function removeItemFollow(id){
+        })
 
-    let appsFollow = JSON.parse(localStorage.getItem('follow')) || [];
-
-    appsFollow = appsFollow.filter(element => {
-            let key = Object.keys(element);
-            return  element[key].app !== id.toString();
+        /* Limite de texto que se muestra en las descripciones de las cards. */
+        let maxlength = 70;
+        $('.description').text(function(_, text) {
+            return $.trim(text).substring(0, maxlength);
         });
 
-    document.getElementById('followRow-'+id).remove();
-    $('#'+id).prop('disabled', false);
+      /*
+    * Leo el localStorage para que usuario no autenticados pudan agregar applicaciones
+    */
+        loadFollowsItems();
+    });
 
-    localStorage.setItem('follow', JSON.stringify(appsFollow));
-}
+     /*
+    * Funciones para el apartado de mis apps que estoy siguiendo. (LocalStorage y Guardados en la BD)
+    */
 
-function loadFollowsItems(){
-    let oldItems = JSON.parse(localStorage.getItem('follow'))|| [];
-         //Recorro las app que deje siguiendo, guardando en un localStorage
+    function loadFollowsItems() {
+        let oldItems = JSON.parse(localStorage.getItem('follow')) || [];
+      
         oldItems.forEach(element => {
             followTable(element);
         });
-}
+    }
+
+    function addRow(id, price, name) {
+        let oldItems = JSON.parse(localStorage.getItem('follow')) || [];
+        let newItem = {};
+        newItem[id] = {
+            'app': id,
+            'name': name,
+            'price': price
+        };
+
+        followTable(newItem);
+        oldItems.push(newItem);
+        let notify = $.notify('<div><strong>Agregado a deseados! </strong></div> Esta applicacion ya se encuentra en la lista de deseados', { type: 'success' });
+        localStorage.setItem('follow', JSON.stringify(oldItems));
+    }
+
+    /*
+    * Agrego una fila al DOM cada vez que encuentro alguna en el localStorage-->Usario no autenticado.
+    *  Agrego una fila al DOM por cada registro de la BD-->Usuarios Autenticados Cliente
+    */
+    function followTable(item) {
+    
+        let key = Object.keys(item);
+
+        let row = $('<tr id="followRow-' + item[key].app + '"></tr');
+
+        let dataname = $('<td></td>').text(item[key].name);
+        let dataprice = $('<td></td>').text(item[key].price);
+        let notFollow = $('<td class="text-center" onclick="removeItemFollow(' + item[key].app + ')"></td>').text('x')
 
 
-    $(document).ready(function(e){
+        row.append(dataname);
+        row.append(dataprice);
+        row.append(notFollow);
 
-    loadFollowsItems()
+        $('#desirelist').append(row);
+        $('#' + item[key].app).prop('disabled', true);
 
-    $('.submitForm').click(function(e){
-            e.preventDefault();
-        let id = $(this).attr('idapp');
-        console.log(id)
-        let dblbutton = $(this).attr('app');
-        let cancel = $(this).attr('cancelbutton');
+    }
 
-        if (($(this).attr('formaction'))==='buy') {
+       /*
+    *  Remuevo una fila del DOM y del LocalStorage.
+    *  Remuevo una fila de la DB.
+    */
+    function removeItemFollow(id) {
+
+        let appsFollow= JSON.parse(localStorage.getItem('follow'));
+
+        if(appsFollow && Object.keys(appsFollow).length > 0){
+
+        //Exist data in local storage
+        appsFollow = appsFollow.filter(element => {
+            let key = Object.keys(element);
+            return element[key].app !== id.toString();
+        });
+        
+        messageRemoveItemFollow(id);
+        localStorage.setItem('follow', JSON.stringify(appsFollow));
+
+        }else{
             $.ajax({
-                url: '/api/buy',
-                type: "POST",
-                data: {
-                    app_id: id,
-                    _token: "{{csrf_token()}}"
+                url: '../me/app/remove/'+id,
+                type: "GET",
+                success: function(data) {
+                    messageRemoveItemFollow(id);
                 },
-                success: function (data) {
-                    let buySuccess = $('<img class="loadergif" src="{{ asset("images/check.gif") }}" width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido completada con exito.</h4></div><strong class="text-center">Regresando al app market..</strong>');
-                    $('button[name=' + id + ']').prop('disabled', true);
-                    $('#sucessBuy').modal('show')
-                    $('#successMessageBuy').empty();
-                    setTimeout(function(){
-                            $('#card-' + id).remove();
-                            $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
-                            setTimeout(function(){
-                                $('#sucessBuy').modal("hide").delay(4000);
-                                window.location = data.url
-                                removeItemFollow(id);
-                            }, 5000);
-                        }, 2500);
-
-                    },
-                    error: function(msg){
-                    let buySuccess = $('<img class="loadergif" src="{{ asset("images/error.gif") }}" width="100%" ><div class="alert alert-danger"><h4 class="alert-heading">Su compra no a podido ser realizada.</h4></div><strong class="text-center">Regresando al app market..</strong>');
-                    $('button[name=' + id + ']').prop('disabled', true);
-                    $('#sucessBuy').modal('show')
-                    $('#successMessageBuy').empty();
-                    setTimeout(function(){
-
-                            $('#successMessageBuy').append(buySuccess).delay(4000).fadeIn('slow');
-                            setTimeout(function(){
-                                $('#sucessBuy').modal("hide").delay(4000);
-                            }, 5000);
-                        }, 2500);
-                }
-            });
-        }
-        if (($(this).attr('formaction'))==='cancel') {
-            $.ajax({
-                url: '/api/cancelbuy/' + id,
-                type: "DELETE",
-                data: {
-                    app_id: id,
-                    _token: "{{csrf_token()}}"
-                },
-                success: function (msg) {
-                    $('button[name=' + id + ']').prop('disabled', false);
-                    $('#' + id).prop('disabled', true);
-                    let buyCancel = $('<img class="loadergif" src="{{ asset("images/cancel.gif") }}" width="100%" ><div class="alert alert-success"><h4 class="alert-heading">Su compra ha sido cancelada con exito.</h4></div>');
-                    $('button[name=' + id + ']').prop('disabled', true);
-                    $('#cancelBuy').modal('show')
-                    $('#cancelMessageBuy').empty();
-                    setTimeout(function(){
-                            $('#card-' + id).remove();
-                            $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
-                            setTimeout(function(){
-                                $('#cancelBuy').modal("hide");
-                                location.reload()
-                            }, 5000);
-                        }, 2500);
-                },
-                error: function(msg){
-                    let buyCancel = $('<img class="loadergif" src="{{ asset("images/error.gif") }}" width="100%" ><div class="alert alert-danger"><h4 class="alert-heading">Su compra no a podido ser cancelada.</h4></div><strong class="text-center">Regresando al app market..</strong>');
-                    $('button[name=' + id + ']').prop('disabled', true);
-                    $('#cancelBuy').modal('show')
-                    $('#cancelMessageBuy').empty();
-                    setTimeout(function(){
-                            $('#cancelMessageBuy').append(buyCancel).delay(4000).fadeIn('slow');
-                            setTimeout(function(){
-                                $('#cancelBuy').modal("hide").delay(4000);
-
-                            }, 5000);
-                        }, 2500);
+                error: function(data) {
+                    messageRemoveItemFollow(id);
                 }
             })
         }
-  })
-});
+    }
+
+    function messageRemoveItemFollow(id) 
+    {
+        document.getElementById('followRow-' + id).remove();
+        $('#' + id).prop('disabled', false);
+        var notify = $.notify('<div><strong>Has dejado de seguir esta applicacion. </strong></div>', { type: 'warning'});
+    }
 </script>

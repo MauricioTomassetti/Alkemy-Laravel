@@ -19,7 +19,7 @@ class Developer
     public function handle($request, Closure $next)
     {
         //dd($request->slug);
-        if (Auth::check() && Auth::user()->role->first()->name_role == "Desarrollador") {
+        if (Auth::check() && Auth::user()->roles->first()->name_role == "Desarrollador") {
             return $next($request);
         }
         return back();

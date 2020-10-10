@@ -12,22 +12,20 @@ class StatesTableSeeder extends Seeder
      */
     public function run()
     {
-
         DB::table('states')->insert([
             'id' => 1,
-            'description' => 'No-Purcharsed',
+            'description' => 'Desired',
         ]);
+        
         DB::table('states')->insert([
             'id' => 2,
             'description' => 'Purcharse',
         ]);
-        DB::table('states')->insert([
-            'id' => 3,
-            'description' => 'Desired',
-        ]);
+
         DB::table('states')->insert([
             'id' => 4,
             'description' => 'Created',
         ]);
+
     }
 }

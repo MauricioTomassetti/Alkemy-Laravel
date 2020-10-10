@@ -13,6 +13,7 @@ $factory->define(Application::class, function (Faker $faker) {
         'category_id' => rand(1, 3),
         'vote' =>  $faker->randomDigit(),
         'slug'=> 'Music',
+        'is_online'=> true,
         'description' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea sunt, quibusdam vitae voluptate, nemo fugit cum reprehenderit aut repellat, adipisci recusandae at error dolorum iure eum officiis consequuntur alias. Nostrum!',
         //'image_src' => $faker->image(public_path('/images/applications'), $width = 240, $height = 240),
         'image_src' => '/images/applications',

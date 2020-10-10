@@ -9,7 +9,7 @@ window._ = require('lodash');
 try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
-
+    
     require('bootstrap');
 } catch (e) {}
 
@@ -20,6 +20,8 @@ try {
  */
 
 window.axios = require('axios');
+window.notify = require('bootstrap-notify');
+
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

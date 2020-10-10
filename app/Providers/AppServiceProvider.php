@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Application;
 use App\Observers\ApplicationObserver;
+use App\Services\ApplicationClientService;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,8 +25,13 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(ApplicationClientService $application)
     {
+
+        $categories =  $application->getCategories();
+       
+        View::share('categories',  $categories );
+
         Application::observe(ApplicationObserver::class);
     }
 }
