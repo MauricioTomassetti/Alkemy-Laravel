@@ -3,9 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 
 class Developer
 {
