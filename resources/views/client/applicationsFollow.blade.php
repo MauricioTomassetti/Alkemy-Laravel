@@ -4,7 +4,7 @@
             <div class="card-header">Mis Apps deseadas</div>
             <div class="card-body text-secondary">
                 @guest
-                <h5 class="card-title">Recuerda <a href="{{ route('register') }}">Registrarte</a>o<a href="{{ route('login') }}">Ingresar</a> para poder realizar alguna compra.</h5>
+                <h5 class="card-title">Recuerda <a href="{{ route('register') }}">Registrarte</a> o <a href="{{ route('login') }}">Ingresar</a> para poder realizar alguna compra.</h5>
                 @endguest
                 <h5 class="card-title">Podes ir viendo que apps te interesan</h5>
                 <p class="card-text">
